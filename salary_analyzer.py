@@ -1,19 +1,33 @@
 import pandas as pd
+from utils.logger import log_info, log_error
+from utils.custom_exceptions import InvalidSalaryError
 
 def analyze_salary(file_path):
+    try:
+        log_info("Salary analysis started")
 
-    data = pd.read_csv(file_path)
+        data = pd.read_csv(file_path)
+        print(data.head())
 
-    average_salary = data["Salary"].mean()
-    max_salary = data["Salary"].max()
-    min_salary = data["Salary"].min()
+        if data["Salary"].min() < 0:
+            raise InvalidSalaryError("Negative salary found")
+        average_salary = data["Salary"].mean()
+        print(f"Average Salary: {average_salary}")
 
-    print(f"Average Salary: {average_salary}")
-    print(f"Highest Salary: {max_salary}")
-    print(f"Lowest Salary: {min_salary}")
+        log_info("Salary analysis completed")
 
+    except FileNotFoundError:
+        print("CSV file not found")
+        log_error("CSV file not found")
 
-analyze_salary("data/employees.csv")
-from utils.logger import log_message
+    except InvalidSalaryError as error:
+        print(error)
+        log_error(error)
 
-log_message("Salary analysis started")
+    except Exception as error:
+        print(error)
+        log_error(f"Unexpected error: {error}")
+
+    finally:
+        log_info("Program execution completed")
+      
