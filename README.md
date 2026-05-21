@@ -1,13 +1,20 @@
-# Salary Analyzer Project
+# Employee Salary Processing System
 
-Python-based salary analysis utility project.
+Production-style Python backend mini project.
 
 ## Features
-- CSV handling
-- Salary analysis
+
+- CSV processing
 - Data cleaning
+- Salary analysis
+- JSON export
 - Logging
+- Exception handling
+- Config management
 
 ## Tech Stack
+
 - Python
 - Pandas
+- Logging
+- JSON
