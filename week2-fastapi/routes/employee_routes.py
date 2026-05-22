@@ -1,56 +1,73 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+
 from models.employee_model import Employee
-from services.employee_service import employees
+from models.response_modal import EmployeeResponse
+
+
+from services.employee_service import (
+    get_all_employees,
+    create_employee_service,
+    update_employee_service,
+    delete_employee_service
+)
 
 router = APIRouter()
 
 
-@router.get("/list-employees")
-def get_employees():
+@router.get("/employees")
+def get_employees(min_salary: float = 0):
 
-    return employees
+    return get_all_employees(min_salary)
 
 
-@router.post("/add-employees")
+@router.post(
+    "/employees",
+    response_model=EmployeeResponse,
+    status_code=201
+)
 def create_employee(employee: Employee):
 
-    employees.append(employee.dict())
+    created_employee = create_employee_service(employee)
 
     return {
         "message": "Employee created successfully",
-        "data": employee
+        "data": created_employee.dict()
     }
 
-@router.put("/update-employees/{employee_id}")
+
+@router.put("/employees/{employee_id}")
 def update_employee(employee_id: int, updated_employee: Employee):
 
-    for index, employee in enumerate(employees):
+    employee = update_employee_service(
+        employee_id,
+        updated_employee
+    )
 
-        if employee["id"] == employee_id:
+    if not employee:
 
-            employees[index] = updated_employee.dict()
-
-            return {
-                "message": "Employee updated successfully"
-            }
+        raise HTTPException(
+            status_code=404,
+            detail="Employee not found"
+        )
 
     return {
-        "message": "Employee not found"
+        "message": "Employee updated successfully",
+        "data": employee.dict()
     }
 
-@router.delete("/delete-employees/{employee_id}")
+
+@router.delete("/employees/{employee_id}")
 def delete_employee(employee_id: int):
 
-    for index, employee in enumerate(employees):
+    deleted = delete_employee_service(employee_id)
 
-        if employee["id"] == employee_id:
+    if not deleted:
 
-            employees.pop(index)
-
-            return {
-                "message": "Employee deleted successfully"
-            }
+        raise HTTPException(
+            status_code=404,
+            detail="Employee not found"
+        )
 
     return {
-        "message": "Employee not found"
+        "message": "Employee deleted successfully"
     }
