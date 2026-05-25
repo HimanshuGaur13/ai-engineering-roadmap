@@ -1,8 +1,15 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    Depends
+)
 
-from models.employee_model import Employee
-from models.response_modal import EmployeeResponse
+from sqlalchemy.orm import Session
 
+from database.connection import get_db
+
+from schemas.employee_schema import Employee
+from schemas.response_schema import EmployeeResponse
 
 from services.employee_service import (
     get_all_employees,
@@ -15,9 +22,12 @@ router = APIRouter()
 
 
 @router.get("/employees")
-def get_employees(min_salary: float = 0):
+def get_employees(
+    min_salary: float = 0,
+    db: Session = Depends(get_db)
+):
 
-    return get_all_employees(min_salary)
+    return get_all_employees(db, min_salary)
 
 
 @router.post(
@@ -25,22 +35,38 @@ def get_employees(min_salary: float = 0):
     response_model=EmployeeResponse,
     status_code=201
 )
-def create_employee(employee: Employee):
+def create_employee(
+    employee: Employee,
+    db: Session = Depends(get_db)
+):
 
-    created_employee = create_employee_service(employee)
+    created_employee = create_employee_service(
+        employee,
+        db
+    )
 
     return {
         "message": "Employee created successfully",
-        "data": created_employee.dict()
+        "data": {
+            "id": created_employee.id,
+            "name": created_employee.name,
+            "salary": created_employee.salary,
+            "designation": created_employee.designation        
+        }
     }
 
 
 @router.put("/employees/{employee_id}")
-def update_employee(employee_id: int, updated_employee: Employee):
+def update_employee(
+    employee_id: int,
+    updated_employee: Employee,
+    db: Session = Depends(get_db)
+):
 
     employee = update_employee_service(
         employee_id,
-        updated_employee
+        updated_employee,
+        db
     )
 
     if not employee:
@@ -52,14 +78,25 @@ def update_employee(employee_id: int, updated_employee: Employee):
 
     return {
         "message": "Employee updated successfully",
-        "data": employee.dict()
+        "data": {
+            "id": employee.id,
+            "name": employee.name,
+            "salary": employee.salary,
+            "designation": employee.designation
+        }
     }
 
 
 @router.delete("/employees/{employee_id}")
-def delete_employee(employee_id: int):
+def delete_employee(
+    employee_id: int,
+    db: Session = Depends(get_db)
+):
 
-    deleted = delete_employee_service(employee_id)
+    deleted = delete_employee_service(
+        employee_id,
+        db
+    )
 
     if not deleted:
 

@@ -18,3 +18,28 @@ Production-style Python backend mini project.
 - Pandas
 - Logging
 - JSON
+
+
+
+# Employee Management Backend API
+
+Production-style backend API built using FastAPI.
+
+## Features
+
+- CRUD APIs
+- JWT Authentication
+- Protected Routes
+- Request Validation
+- Service Layer
+- Clean Architecture
+- Logging
+- Postman Testing
+
+## Tech Stack
+
+- Python
+- FastAPI
+- JWT
+- Pydantic
+- Uvicorn

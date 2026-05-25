@@ -1,30 +1,27 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 
-from routes.employee_routes import router as employee_router
+from database.connection import engine
 
-app = FastAPI(
-    title="Employee Management API",
-    version="1.0.0"
+from database.models import Base
+
+from routes.auth_routes import router as auth_router
+
+from routes.employee_routes import (
+    router as employee_router
 )
 
+app = FastAPI()
 
-# Dependency Injection Example
-def common_parameters():
+Base.metadata.create_all(bind=engine)
 
-    return {
-        "app_name": "Employee Management System",
-        "version": "v1"
-    }
+app.include_router(auth_router)
+
+app.include_router(employee_router)
 
 
 @app.get("/")
-def home(params: dict = Depends(common_parameters)):
+def home():
 
     return {
-        "message": "Employee API Running",
-        "app_info": params
+        "message": "Backend Running"
     }
-
-
-# Include Employee Routes
-app.include_router(employee_router)
