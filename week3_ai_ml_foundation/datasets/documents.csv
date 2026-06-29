@@ -1,0 +1,13 @@
+id,text,category
+1,Artificial Intelligence is transforming industries,AI
+2,Machine learning powers automation systems,AI
+3,Deep learning improves image recognition,AI
+4,Natural language processing helps chatbots,AI
+5,Vector databases are used in RAG systems,AI
+6,Football is a popular sport worldwide,Sports
+7,Cricket is the most watched sport in India,Sports
+8,Basketball is played professionally in many countries,Sports
+9,Python is widely used for backend development,Programming
+10,FastAPI is a modern Python web framework,Programming
+11,Docker helps containerize applications,DevOps
+12,Kubernetes manages container orchestration,DevOps
